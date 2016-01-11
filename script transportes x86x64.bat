@@ -11,6 +11,13 @@
 @echo off
 setlocal EnableDelayedExpansion
 
+echo ###############################################################################
+echo ###                                                                         ###
+echo ###           Bienvenido al script de aplicacion de transportes SAP.        ###
+echo ###                                                                         ###
+echo ###############################################################################
+echo.
+
 REM Configura la variable de entorno %AMBIENTE% en caso de que no se haya hecho previamente.
 REM En esta variable, se especifica la ruta del archivo .PFL, del ambiente actual, necesario para la aplicacion de transportes.
 IF NOT DEFINED AMBIENTE (
@@ -18,16 +25,16 @@ IF NOT DEFINED AMBIENTE (
 	TIMEOUT /T 1 > nul
 	echo [INF] Para continuar, es necesario definir la ruta del archivo .PFL
 	TIMEOUT /T 1 > nul
-:setenvironment
+:setambiente
 	set /P AMBIENTE=[INP] Ingrese la ruta del archivo .PFL: 
 	IF [!AMBIENTE!] EQU [] ( 
-		goto :setenvironment
+		goto :setambiente
 	) ELSE	(
 		SETX /M AMBIENTE !AMBIENTE!
 	)
 )
 
-IF DEFINED AMBIENTE echo [INF] El archivo .PFL se configuro con la ruta !AMBIENTE! ...
+IF DEFINED AMBIENTE echo [INF] El archivo .PFL se configuro con la ruta !AMBIENTE! .
 
 REM Configura la variable de entorno %OPCIONES% en caso de que no se haya hecho previamente.
 REM En esta variable, se especifican las opciones de importacion.
@@ -36,7 +43,7 @@ IF NOT DEFINED OPCIONES (
 	TIMEOUT /T 1 > nul
 	TIMEOUT /T 1 > nul
 :setenvironment
-	set /P OPCIONES=[INF] Para continuar, definalas aqui: 
+	set /P OPCIONES=[INF] Para continuar, definalas aqui ^( Sintaxis: U[0^|1^|2^|3^|4^|6^|8^|9]^): 
 	IF [!OPCIONES!] EQU [] ( 
 		goto :setenvironment
 	) ELSE	(
@@ -44,12 +51,14 @@ IF NOT DEFINED OPCIONES (
 	)
 )
 
-IF DEFINED OPCIONES echo [INF] Las opciones para la aplicacion de transportes se definieron como : !OPCIONES! ...
+IF DEFINED OPCIONES echo [INF] Configuracion de opciones para aplicacion de transportes: !OPCIONES! .
+
+echo.
 
 set filename=%1
 set /a count=0
-set /P sid=[USR] Ingresa el SID del cliente:
-set /P cliente=[USR] Ingresa el mandante al que se aplicaran los transportes:
+set /P sid=[INP] Ingresa el SID del cliente: 
+set /P cliente=[USR] Ingresa el mandante al que se aplicaran los transportes: 
 
 REM TO-DO: VAlidar.......
 
