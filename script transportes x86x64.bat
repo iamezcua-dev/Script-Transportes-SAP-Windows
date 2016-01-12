@@ -30,7 +30,7 @@ IF NOT DEFINED AMBIENTE (
 	IF [!AMBIENTE!] EQU [] ( 
 		goto :setambiente
 	) ELSE	(
-		SETX /M AMBIENTE !AMBIENTE!
+		SETX AMBIENTE !AMBIENTE!
 	)
 )
 
@@ -47,17 +47,33 @@ IF NOT DEFINED OPCIONES (
 	IF [!OPCIONES!] EQU [] ( 
 		goto :setenvironment
 	) ELSE	(
-		SETX /M OPCIONES !OPCIONES!
+		SETX OPCIONES !OPCIONES!
 	)
 )
 
 IF DEFINED OPCIONES echo [INF] Configuracion de opciones para aplicacion de transportes: !OPCIONES! .
 
+REM Configura la variable de entorno %SID% en caso de que no se haya hecho previamente.
+REM En esta variable, se especifica el System Identifier del sistema.
+IF NOT DEFINED SID (
+	echo [ERR] No se definieron las opciones de aplicacion de transportes.
+	TIMEOUT /T 1 > nul
+	TIMEOUT /T 1 > nul
+:setsid
+	set /P SID=[INP] Para continuar, escriba el SID del ambiente: 
+	IF [!SID!] EQU [] ( 
+		goto :setsid
+	) ELSE	(
+		SETX SID !SID!
+	)
+)
+
+IF DEFINED SID echo [INF] Configuracion de opciones para aplicacion de transportes: !SID! .
+
 echo.
 
 set filename=%1
 set /a count=0
-set /P sid=[INP] Ingresa el SID del cliente: 
 set /P cliente=[USR] Ingresa el mandante al que se aplicaran los transportes: 
 
 REM TO-DO: VAlidar.......
@@ -71,7 +87,7 @@ echo [INF] El archivo "%filename%", cuenta con: %count% ordenes de transporte.
 REM Agregar al bufer
 for /F "tokens=*" %%B in (%filename%) DO (
 	echo [INF] Agregando al bufer: %%B
-	tp addtobuffer %%B !sid! client=!cliente! pf=%AMBIENTE%
+	tp addtobuffer %%B !SID! client=!cliente! pf=%AMBIENTE%
 	set /a codigo_retorno=!ERRORLEVEL!
 	echo [CRT] !codigo_retorno!
 	if !codigo_retorno! GTR 0 (
@@ -86,7 +102,7 @@ for /F "tokens=*" %%B in (%filename%) DO (
 REM Importar los transportes
 for /F "tokens=*" %%B in (%filename%) DO (
 	echo [INF] Aplicando el transporte: %%B
-	tp import %%B !sid! client=!cliente! pf=%AMBIENTE% %OPC%
+	tp import %%B !SID! client=!cliente! pf=%AMBIENTE% %OPC%
 	set /a codigo_retorno=!ERRORLEVEL!
 	echo [CRT] !codigo_retorno!
 	if !codigo_retorno! GTR 0 (
