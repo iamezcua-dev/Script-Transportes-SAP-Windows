@@ -1,5 +1,5 @@
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: @authors: Yanuen Gonzalez, Isaac Amezcua, Alejandro Robles.
+:: @authors: Isaac Amezcua, Yanuen Gonzalez.
 :: @company: Kio Networks
 :: @scope: Internal Use
 ::
