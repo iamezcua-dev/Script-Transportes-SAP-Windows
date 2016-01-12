@@ -68,7 +68,7 @@ IF NOT DEFINED SID (
 	)
 )
 
-IF DEFINED SID echo [INF] Configuracion de opciones para aplicacion de transportes: !SID! .
+IF DEFINED SID echo [INF] System Identifier configurado: !SID! .
 
 echo.
 
@@ -87,12 +87,13 @@ echo [INF] El archivo "%filename%", cuenta con: %count% ordenes de transporte.
 REM Agregar al bufer
 for /F "tokens=*" %%B in (%filename%) DO (
 	echo [INF] Agregando al bufer: %%B
+	echo Comando a ejecutar: tp addtobuffer %%B !SID! client=!cliente! pf=%AMBIENTE%
 	tp addtobuffer %%B !SID! client=!cliente! pf=%AMBIENTE%
 	set /a codigo_retorno=!ERRORLEVEL!
 	echo [CRT] !codigo_retorno!
 	if !codigo_retorno! GTR 0 (
 		echo %%B Cod=!codigo_retorno! >> Delbuffer_%filename%.error
-		echo [WARN] Revisa la siguiente orden: %%B con código de retorno: !codigo_retorno! .
+		echo [WARN] Revisa la siguiente orden: %%B con codigo de retorno: !codigo_retorno! .
 		goto :eof
 	)  else (
 		echo %%B !codigo_retorno! >> Delbuffer_%filename%.log
@@ -102,12 +103,13 @@ for /F "tokens=*" %%B in (%filename%) DO (
 REM Importar los transportes
 for /F "tokens=*" %%B in (%filename%) DO (
 	echo [INF] Aplicando el transporte: %%B
+	echo Comando a ejecutar: tp import %%B !SID! client=!cliente! pf=%AMBIENTE% %OPC%
 	tp import %%B !SID! client=!cliente! pf=%AMBIENTE% %OPC%
 	set /a codigo_retorno=!ERRORLEVEL!
 	echo [CRT] !codigo_retorno!
 	if !codigo_retorno! GTR 0 (
 		echo %%B Cod=!codigo_retorno! >> Delimport_%filename%.error
-		echo [WARN] Revisa la siguiente orden: %%B con código de retorno: !codigo_retorno! .
+		echo [WARN] Revisa la siguiente orden: %%B con codigo de retorno: !codigo_retorno! .
 		goto :eof
 	)  else (
 		echo %%B !codigo_retorno! >> Delimport_%filename%.log
