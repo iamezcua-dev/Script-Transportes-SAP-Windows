@@ -9,12 +9,12 @@ package gui.panel;
  *
  * @author iamezcua
  */
-public class PanelGeneral extends javax.swing.JPanel {
+public class PanelOperations extends javax.swing.JPanel {
 
     /**
-     * Creates new form PanelGeneral
+     * Creates new form PanelOperations
      */
-    public PanelGeneral() {
+    public PanelOperations() {
         initComponents();
     }
 
