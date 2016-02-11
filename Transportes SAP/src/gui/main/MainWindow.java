@@ -15,6 +15,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -43,7 +50,7 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         setPanelPfl(null);
         setPanelOpciones(null);
-        ((DefaultCaret)this.jTextArea1.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_U‌​PDATE);
+        ((DefaultCaret) this.jTextArea1.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_U‌​PDATE);
     }
 
     private JFrame getFrame() {
@@ -201,6 +208,10 @@ public class MainWindow extends javax.swing.JFrame {
                         if (line.contains("[INP] Para continuar, definalas aqui ( Sintaxis: U[0|1|2|3|4|6|8|9]):")) {
                             configureImportOptions();
                         }
+
+                        if (line.contains("[INP] Para continuar, escriba el SID del ambiente:")) {
+                            configureSID();
+                        }
                     }
                     System.out.println("[INF] Script execution finished...");
                 } catch (IOException ex) {
@@ -236,6 +247,10 @@ public class MainWindow extends javax.swing.JFrame {
                 setEnvironmentVarWithGUI(Constants.AMBIENTE_ENVIRONMENT_VAR_GOT);
             }
 
+            private void configureSID() {
+                setEnvironmentVarWithGUI(Constants.SID_ENVIRONMENT_VAR_GOT);
+            }
+
             private void setEnvironmentVarWithGUI(final String property) {
                 final JPanel panel = buildPanel(property);
 
@@ -246,24 +261,9 @@ public class MainWindow extends javax.swing.JFrame {
                         panel.setVisible(true);
                         panelMain.add(panel, BorderLayout.CENTER);
 
-//                        Dimension size = panel.getSize();
-//                        System.out.println("- PanelOpciones size: " + "[" + size.getWidth() + ", " + size.getHeight() + "]");
-//                        size.setSize(10 + size.getWidth(), 50 + size.getHeight());
-//                        System.out.println("- PanelOpciones size must have increased to: " + "[" + size.getWidth() + ", " + size.getHeight() + "]");
-//                        panelMain.setSize(size);
-                        
                         getFrame().pack();
                         SwingUtilities.updateComponentTreeUI(panelMain);
 
-//                        Dimension d = panelOpciones.getSize();
-//                        System.out.println("PanelOpciones sizes: " + "[" + d.getWidth() + ", " + d.getHeight() + "]");
-//                        d.setSize(panelOpciones.getWidth() + 10, panelOpciones.getHeight() + 10);
-//                        
-//                        panelMain.setSize(d);
-//                        panelMain.revalidate();
-//                        panelMain.repaint();
-//                        SwingUtilities.updateComponentTreeUI(panelMain);
-//                        System.out.println("panelMain resized to: " + panelMain.getSize());
                     }
                 });
             }
@@ -296,7 +296,7 @@ public class MainWindow extends javax.swing.JFrame {
                         if (getPanelSID() == null) {
                             setPanelSID(new PanelSID());
                         }
-                        panel = getPanelOpciones();
+                        panel = getPanelSID();
 
                 }
 
@@ -305,17 +305,29 @@ public class MainWindow extends javax.swing.JFrame {
                         @Override
                         public void propertyChange(PropertyChangeEvent pce) {
                             if (pce.getPropertyName().equals(type)) {
-//                                JOptionPane.showMessageDialog(panelMain, "Flush stdin order received!");
                                 try {
                                     String envVarValue = pce.getNewValue().toString();
-//                                    JOptionPane.showMessageDialog(panelMain, ((type.equals(Constants.AMBIENTE_ENVIRONMENT_VAR_GOT)) ? "AMBIENTE" : (type.equals(Constants.OPCIONES_ENVIRONMENT_VAR_GOT)) ? "OPCIONES" : "SID") + envVarValue);
                                     getWriter().write("\"" + envVarValue + "\"");
                                     getWriter().flush();
-                                    jTextArea1.append("\"" + envVarValue + "\"");
-//                                    JOptionPane.showMessageDialog(panelMain, "Stdin Flushed!");
+                                    jTextArea1.append("--> \"" + envVarValue + "\"");
+                                    System.out.println(" \"" + envVarValue + "\"");
+                                    writeToIniFile(((type.equals(Constants.AMBIENTE_ENVIRONMENT_VAR_GOT)) ? "AMBIENTE" : (type.equals(Constants.OPCIONES_ENVIRONMENT_VAR_GOT)) ? "OPCIONES" : "SID"), envVarValue);
                                 } catch (IOException ex) {
                                     Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                            }
+                        }
+
+                        private void writeToIniFile(String envVar, String value) {
+                            try {
+                                Path configFile = Paths.get(System.getProperty("user.dir") + "\\" + "config.ini");
+                                if (!Files.exists(configFile, LinkOption.NOFOLLOW_LINKS)) {
+                                    Files.createFile(configFile);
+                                    Files.write(configFile, ("[Configuration for SAP Transports]" + System.lineSeparator() + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
+                                }
+                                Files.write(Paths.get(System.getProperty("user.dir") + "\\" + "config.ini"), (envVar + "=" + value + System.lineSeparator()).getBytes(Charset.forName("UTF-8")), StandardOpenOption.APPEND);
+                            } catch (IOException ex) {
+                                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
                     });

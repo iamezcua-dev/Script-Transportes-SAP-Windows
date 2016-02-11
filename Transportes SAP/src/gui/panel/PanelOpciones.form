@@ -114,7 +114,7 @@
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jScrollPane3.setBorder(null);"/>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="textPaneWarningMessage.setBorder(BorderFactory.createDashedBorder(Color.RED));&#xa;textPaneWarningMessage.setContentType(&quot;text/html&quot;);&#xa;textPaneWarningMessage.setText(&quot;&lt;h3&gt;No profile file loaded!&lt;/h3&gt;&lt;p&gt;You need to specify where &lt;code&gt;.pfl&lt;/code&gt; file is, so you can apply bulk SAP transports.&quot;);"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="textPaneWarningMessage.setBorder(BorderFactory.createDashedBorder(Color.RED));&#xa;textPaneWarningMessage.setContentType(&quot;text/html&quot;);&#xa;textPaneWarningMessage.setText(&quot;&lt;h3&gt;Default import options not defined!&lt;/h3&gt;&lt;p&gt;You need to specify what options apply for this server by default.&quot;);"/>
               </AuxValues>
             </Component>
           </SubComponents>
@@ -160,10 +160,7 @@
                           <Component id="jCheckBox4" alignment="1" max="32767" attributes="0"/>
                           <Component id="jCheckBox3" alignment="1" max="32767" attributes="0"/>
                           <Component id="jCheckBox2" alignment="1" max="32767" attributes="0"/>
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="jButton1" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>

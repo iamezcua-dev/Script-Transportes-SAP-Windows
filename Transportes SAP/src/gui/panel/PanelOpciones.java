@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import property.Constants;
 
 /**
@@ -82,7 +83,7 @@ public class PanelOpciones extends javax.swing.JPanel {
 
         textPaneWarningMessage.setBorder(BorderFactory.createDashedBorder(Color.RED));
         textPaneWarningMessage.setContentType("text/html");
-        textPaneWarningMessage.setText("<h3>No profile file loaded!</h3><p>You need to specify where <code>.pfl</code> file is, so you can apply bulk SAP transports.");
+        textPaneWarningMessage.setText("<h3>Default import options not defined!</h3><p>You need to specify what options apply for this server by default.");
         textPaneWarningMessage.setBackground(new java.awt.Color(255, 255, 102));
         textPaneWarningMessage.setFocusable(false);
         textPaneWarningMessage.setMinimumSize(new java.awt.Dimension(396, 80));
@@ -147,9 +148,7 @@ public class PanelOpciones extends javax.swing.JPanel {
                     .addComponent(jCheckBox4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jCheckBox3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jCheckBox2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -223,23 +222,31 @@ public class PanelOpciones extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String opciones = "";
         
+        //Gets all the the keys, whether their corresponding JCheckBox is checked.
         for (Map.Entry<String, JCheckBox> pair : optionCodeMap.entrySet()) {
             opciones = opciones + (((JCheckBox)pair.getValue()).isSelected()? pair.getKey() : "");
         }
         
+        //Tokenizes string contained in opciones variable, and add them to a sortable List<Character> .
         List<Character> lista = new ArrayList<>();
         for(Character ch : opciones.toCharArray()){
             lista.add(ch);
         }
                 
+        //Sorts their contents
         Collections.sort(lista);
         
+        //Empty the opciones variable, to refill it with the sorted chars.
+        opciones = "";
+        
+        //Rebuilds options variable contents with the sorted chars.
         for(Character ch : lista){
             opciones += ch.toString();
         }
         
+        //Adds the U identifier, only if there are at least 1 option in the string.
         opciones = ((lista.size() > 0)? "U" : "") + opciones;
-        
+               
         this.setVisible(false);
         firePropertyChange(Constants.OPCIONES_ENVIRONMENT_VAR_GOT, "", opciones);
     }//GEN-LAST:event_jButton1ActionPerformed
